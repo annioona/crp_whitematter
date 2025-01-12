@@ -1,0 +1,22 @@
+### Correct variable names, class to factor
+
+library(dplyr)
+OBM2 <- OBM2  %>% mutate(sex = case_when( sex == 1 ~ '2', sex == 2 ~'1', T~ NA_character_)) #Female = 1, Male = 2
+OBM2 <- OBM2 %>% mutate(mother_edu = case_when( mother_edu == 'Basic education' ~ '1', mother_edu == 'Secondary education' ~'2', mother_edu == 'University/AMK' ~'3', T~ NA_character_))
+OBM2 <- OBM2  %>% mutate(mother_alcohol = case_when( mother_alcohol == 'No' ~ '1', mother_alcohol == 'Yes' ~'2', T~ NA_character_)) #No = 1 (control)
+
+OBM2$mother_edu <- as.factor(OBM2$mother_edu)
+
+### Imputation, include all variables used in later analysis
+
+install.packages("missForest")
+library(missForest)
+
+set.seed(110)
+data.imp <- missForest(as.data.frame(OBM2[, c("sex", "visit_age", "crp", "crp_log10", "mother_smoking", "mother_edu", "mother_alcohol", "mother_BMI", "crp_gestation", "syntyma_rv", "sex_crp_interaction", "mean_FA")]))
+
+OBM2$mother_BMI <- data.imp$ximp$mother_BMI
+OBM2$crp_gestation <- data.imp$ximp$crp_gestation
+OBM2$mother_alcohol <- data.imp$ximp$mother_alcohol
+
+save.image("~/Documents/whitematter/OBM2_imp.RData")
