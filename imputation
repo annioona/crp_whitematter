@@ -20,3 +20,17 @@ OBM2$crp_gestation <- data.imp$ximp$crp_gestation
 OBM2$mother_alcohol <- data.imp$ximp$mother_alcohol
 
 save.image("~/Documents/whitematter/OBM2_imp.RData")
+
+### Overlapping IDs
+
+CASELIST$overlap <- ifelse(CASELIST$id %in% nfbcid$id, "yes", "no") #new column indicating, whether crp available
+CASELIST$file_name <- paste0("file", sprintf("%04d", 1:449), ".nii.gz") 
+filtered_df <- CASELIST[CASELIST$overlap == "no", ]
+cat(filtered_df$file_name, sep = ",")
+
+### Design matrix
+
+wm_obm[] <- lapply(wm_obm, as.character) #character to avoid " " in factor variables
+wm_obm <- wm_obm %>% relocate(m_age, .after = visit_age) #relocate columns if needed, independent variable first
+wm_obm <- wm_obm %>% select(-("sex_crp_interaction")) #remove any variables not used in the analysis model
+write.table(wm_obm, file = "wm_obm_full.txt", sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE) #save as a txt -file without any column names etc
