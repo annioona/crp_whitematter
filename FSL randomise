@@ -1,0 +1,20 @@
+##################
+### JOB SCRIPT ###
+##################
+
+#!/bin/bash
+#SBATCH --job-name=wm_randomise
+#SBATCH --account=<project_name>
+#SBATCH --partition=small
+#SBATCH --time=19:00:00
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=16G
+
+
+#FA analysis
+randomise -i all_FA_maternal_CRP_skeletonised.nii.gz \
+	-o fully_adjusted_FA \
+	-m new_skeleton_mask.nii.gz \
+	-d design.mat -t design.con \
+	-n 5000 \
+	--T2 
