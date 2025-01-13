@@ -24,6 +24,7 @@ save.image("~/Documents/whitematter/OBM2_imp.RData")
 ### Overlapping IDs
 
 CASELIST$overlap <- ifelse(CASELIST$id %in% nfbcid$id, "yes", "no") #new column indicating, whether crp available
+missing_ids <- setdiff(nfbcid$id, CASELIST$id) #vice versa
 CASELIST$file_name <- paste0("file", sprintf("%04d", 1:449), ".nii.gz") 
 filtered_df <- CASELIST[CASELIST$overlap == "no", ]
 cat(filtered_df$file_name, sep = ",")
