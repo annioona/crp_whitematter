@@ -5,26 +5,26 @@
 # 4D MRI from TBSS pre-processing
 # CASELIST.txt from ANTs TBSS
 
-CASELIST$overlap <- ifelse(CASELIST$id %in% nfbcid$id, "yes", "no") # new column indicating, whether crp is available
+CASELIST$overlap <- ifelse(CASELIST$id %in% nfbcid$id, "yes", "no")             # new column indicating, whether crp is available
 missing_ids <- setdiff(nfbcid$id, CASELIST$id) 
-print(missing_ids) # vice versa
-dataset <- dataset %>% filter(nfbcid != XXXXXX) # remove from dataframe any subjects not matching the DTI images
-CASELIST$file_name <- paste0("file", sprintf("%04d", 1:449), ".nii.gz") # make new column, file0000.nii.gz onwards
-filtered_df <- CASELIST[CASELIST$overlap == "no", ] #n ew dataframe with the subjects that do not have crp available
-cat(filtered_df$file_name, sep = ",") # print filenames (file0000.nii.gz), separated by commas, no spaces
+print(missing_ids)                                                              # vice versa
+dataset <- dataset %>% filter(nfbcid != XXXXXX)                                 # remove from dataframe any subjects not matching the DTI images
+CASELIST$file_name <- paste0("file", sprintf("%04d", 1:449), ".nii.gz")         # make new column, file0000.nii.gz onwards
+filtered_df <- CASELIST[CASELIST$overlap == "no", ]                             # n ew dataframe with the subjects that do not have crp available
+cat(filtered_df$file_name, sep = ",")                                           # print filenames (file0000.nii.gz), separated by commas, no spaces
 
 ### IN BASH
-fslsplit all_FA_skeletonized.nii.gz file -t # 4D file into several 3D files
-rm {copy from last line above} # remove subjects, that do not have crp available
-fslmerge -t all_FA_maternal_CRP_skeletonised.nii.gz file* # new 4D file
+fslsplit all_FA_skeletonized.nii.gz file -t                                     # 4D file into several 3D files
+rm {copy from last line above}                                                  # remove subjects, that do not have crp available
+fslmerge -t all_FA_maternal_CRP_skeletonised.nii.gz file*                       # new 4D file
 
 #####################
 ### DESIGN MATRIX ###
 #####################
 
-wm_obm[] <- lapply(wm_obm, as.character) # character to avoid "1" in factor variables
-wm_obm <- wm_obm %>% relocate(m_age, .after = visit_age) # relocate columns if needed, independent variable first
-wm_obm <- wm_obm %>% select(-("sex_crp_interaction")) # remove any variables not used in the analysis model
+wm_obm[] <- lapply(wm_obm, as.character)                                        # character to avoid "1" in factor variables
+wm_obm <- wm_obm %>% relocate(m_age, .after = visit_age)                        # relocate columns if needed, independent variable first
+wm_obm <- wm_obm %>% select(-("sex_crp_interaction"))                           # remove any variables not used in the analysis model
 write.table(wm_obm, file = "wm_full.txt", sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE) # save as a txt -file without any column names etc
 
 ### IN BASH
