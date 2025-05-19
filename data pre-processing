@@ -26,7 +26,7 @@ CASELIST$overlap <- ifelse(CASELIST$id %in% nfbcid$id, "yes", "no")             
 missing_ids <- setdiff(nfbcid$id, CASELIST$id) 
 print(missing_ids)                                                              # vice versa
 dataset <- dataset %>% filter(nfbcid != XXXXXX)                                 # remove from dataframe any subjects not matching the DTI images
-CASELIST$file_name <- paste0("file", sprintf("%04d", 1:449), ".nii.gz")         # make new column, file0000.nii.gz onwards
+CASELIST$file_name <- paste0("file", sprintf("%04d", 0:448), ".nii.gz")         # make new column, file0000.nii.gz onwards
 filtered_df <- CASELIST[CASELIST$overlap == "no", ]                             # new dataframe with the subjects that do not have crp available
 cat(filtered_df$file_name, sep = ",")                                           # print filenames (file0000.nii.gz), separated by commas, no spaces
 
