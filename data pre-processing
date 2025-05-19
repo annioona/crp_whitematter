@@ -11,6 +11,9 @@ lower_bound <- Q1 - 3 * IQR_value
 upper_bound <- Q2 + 3 * IQR_value
 outliers <- OBM2$crp[OBM2$crp < lower_bound | OBM2$crp > upper_bound]        # 16 in the upper quartile
 
+# 1 individual removed due to abnormally large ventricles
+# 1 individual removed due to unsuccesful imaging
+# final sample size 345
 
 #######################
 ### OVERLAPPING IDS ###
