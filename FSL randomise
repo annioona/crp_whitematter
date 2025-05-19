@@ -17,4 +17,5 @@ randomise -i all_FA_maternal_CRP_skeletonised.nii.gz \
 	-m new_skeleton_mask.nii.gz \
 	-d design.mat -t design.con \
 	-n 5000 \
-	--T2 
+	--T2 \
+	--glm_output
