@@ -1,4 +1,18 @@
 #######################
+### REMOVE OUTLIERS ###
+#######################
+
+# "outside of the lower quartile minus 3×interquartile range or upper quartile plus 3×interquartile range"
+
+Q1 <- quantile(OBM2$crp, 0.25)
+Q2 <- quantile(OBM2$crp, 0.75)
+IQR_value <- IQR(OBM2$crp)
+lower_bound <- Q1 - 3 * IQR_value
+upper_bound <- Q2 + 3 * IQR_value
+outliers <- OBM2$crp[OBM2$crp < lower_bound | OBM2$crp > upper_bound]        # 16 in the upper quartile
+
+
+#######################
 ### OVERLAPPING IDS ###
 #######################
 
@@ -10,7 +24,7 @@ missing_ids <- setdiff(nfbcid$id, CASELIST$id)
 print(missing_ids)                                                              # vice versa
 dataset <- dataset %>% filter(nfbcid != XXXXXX)                                 # remove from dataframe any subjects not matching the DTI images
 CASELIST$file_name <- paste0("file", sprintf("%04d", 1:449), ".nii.gz")         # make new column, file0000.nii.gz onwards
-filtered_df <- CASELIST[CASELIST$overlap == "no", ]                             # n ew dataframe with the subjects that do not have crp available
+filtered_df <- CASELIST[CASELIST$overlap == "no", ]                             # new dataframe with the subjects that do not have crp available
 cat(filtered_df$file_name, sep = ",")                                           # print filenames (file0000.nii.gz), separated by commas, no spaces
 
 ### IN BASH
