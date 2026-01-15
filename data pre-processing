@@ -45,4 +45,35 @@ wm_obm <- wm_obm %>% select(-("sex_crp_interaction"))                           
 write.table(wm_obm, file = "wm_full.txt", sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE) # save as a txt -file without any column names etc
 
 ### IN BASH
-Text2Vest wm_full.txt design.mat # same for contrast matrix
+Text2Vest wm_full.txt design.mat                                                # same for contrast matrix
+
+
+######################################################################################################################################
+
+###############################
+### SEX-STRATIFIED ANALYSIS ###
+###############################
+
+### IN R
+write.table(df$sex, file = "/Users/name/Documents/sex.txt", row.names = FALSE, col.names = FALSE)     # file of sex variable, same order as nifti
+
+female[] <- lapply(wm_obm, as.character)                                                              # everything as character
+write.table(female, file = "/Users/name/Documents/female.txt", sep = " ", 
+            row.names = FALSE, col.names = FALSE, quote = FALSE)                                      # save as a txt file
+
+### IN BASH
+Text2Vest female.txt design.mat                                                                       # same for contrast matrix
+
+awk '$1==1 {print NR-1}' sex.txt > female_idx.txt                                                     # index file of females and males separately
+awk '$1==2 {print NR-1}' sex.txt > male_idx.txt
+
+fslselectvols -i MD_CRP_345_skeletonised.nii.gz -o females.nii.gz --vols=$(paste -sd, female_idx.txt) # nifti of females
+fslselectvols -i MD_CRP_345_skeletonised.nii.gz -o males.nii.gz --vols=$(paste -sd, male_idx.txt)
+fslinfo females.nii.gz | grep dim4                                                                    # check results
+
+
+
+
+
+
+
