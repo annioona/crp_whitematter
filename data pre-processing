@@ -67,13 +67,30 @@ Text2Vest female.txt design.mat                                                 
 awk '$1==1 {print NR-1}' sex.txt > female_idx.txt                                                     # index file of females and males separately
 awk '$1==2 {print NR-1}' sex.txt > male_idx.txt
 
+wc -l female_idx.txt male_idx.txt                                                                     # checking to match dataframe, females 198, males 147
+
 fslselectvols -i MD_CRP_345_skeletonised.nii.gz -o females.nii.gz --vols=$(paste -sd, female_idx.txt) # nifti of females
 fslselectvols -i MD_CRP_345_skeletonised.nii.gz -o males.nii.gz --vols=$(paste -sd, male_idx.txt)
 fslinfo females.nii.gz | grep dim4                                                                    # check results
 
+################################################################################################################################################################
 
+#############################
+### ADDING INTERCEPT TERM ###
+#############################
 
+awk '
+/^\/NumWaves/ {$2=$2+1}
+/^\/Matrix/ {print; inmatrix=1; next}
+inmatrix && NF>0 {print "0 "$0; next}
+{print}
+' design.con > designnew.con
 
-
+awk '
+/^\/NumWaves/ {$2=$2+1}
+/^\/Matrix/ {print; inmatrix=1; next}
+inmatrix && NF>0 {print "1 "$0; next}
+{print}
+' design.mat > design_new.mat
 
 
